@@ -40,7 +40,7 @@ class ICL:
     @functools.cache
     def instances(self):
         return [instance.instance for instance in self.in_context_instances]
-    
+
     @property
     @functools.cache
     def features(self):

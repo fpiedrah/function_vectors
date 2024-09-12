@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "transformers>=4.44.2",
     "nnsight>=0.3.5",
+    "rich>=13.8.1",
 ]
 requires-python = "==3.12.*"
 readme = "README.md"

@@ -5,10 +5,10 @@ from function_vectors import datasets
 
 
 def construct_function_vector(
-    model: nnsight.LanguageModel, dataset: datasets.ICL, layer: int = -1
+    model: nnsight.LanguageModel, dataset: datasets.ICL, layer: int
 ) -> tuple[torch.Tensor, list[str]]:
     with model.trace() as tracer:
-        with tracer.invoke(dataset.prompts):
+        with tracer.invoke(dataset.prompts) as invoker:
             function_vector = (
                 model.model.layers[layer].output[0][:, -1].mean(dim=0).save()
             )
@@ -33,15 +33,23 @@ def apply_function_vector(
         )
 
     with model.trace() as tracer:
-        with tracer.invoke(dataset.prompts):
-            zero_shot_continuation_ids = model.lm_head.output[:, -1].argmax(dim=-1).save()
+        with tracer.invoke(dataset.prompts) as invoker_zero_shot:
+            zero_shot_continuation_ids = (
+                model.lm_head.output[:, -1].argmax(dim=-1).save()
+            )
 
-        with tracer.invoke(dataset.prompts):
+        with tracer.invoke(dataset.prompts) as invoker_function_vector:
             model.model.layers[layer].output[0][:, -1] += function_vector
 
-            function_vector_continuation_ids = model.lm_head.output[:, -1].argmax(dim=-1).save()
+            function_vector_continuation_ids = (
+                model.lm_head.output[:, -1].argmax(dim=-1).save()
+            )
 
-    zero_shot_continuations = model.tokenizer.batch_decode(zero_shot_continuation_ids.value)
-    function_vector_continuations = model.tokenizer.batch_decode(function_vector_continuation_ids.value)
+    zero_shot_continuations = model.tokenizer.batch_decode(
+        zero_shot_continuation_ids.value
+    )
+    function_vector_continuations = model.tokenizer.batch_decode(
+        function_vector_continuation_ids.value
+    )
 
     return (zero_shot_continuations, function_vector_continuations)
