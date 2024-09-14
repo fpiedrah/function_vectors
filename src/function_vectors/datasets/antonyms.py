@@ -1,4 +1,6 @@
-ANTONYMS = [
+ANTONYM_INSTRUCTION = "After each word I provide, followed by a colon ('{separator}'), please generate its antonym."
+
+ANTONYM_PAIRS = [
     ("old", "young"),
     ("top", "bottom"),
     ("awake", "asleep"),

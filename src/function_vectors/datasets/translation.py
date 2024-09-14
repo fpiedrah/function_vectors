@@ -1,4 +1,4 @@
-ENGLISH_DEUTSCH = [
+ENGLISH_DEUTSCH_PAIRS = [
     ("the", "die"),
     ("and", "sowie"),
     ("was", "war"),
@@ -95,7 +95,7 @@ ENGLISH_DEUTSCH = [
     ("october", "oktober"),
 ]
 
-ENGLISH_SPANISH = [
+ENGLISH_SPANISH_PAIRS = [
     ("and", "y"),
     ("was", "fue"),
     ("for", "para"),
@@ -194,7 +194,7 @@ ENGLISH_SPANISH = [
     ("the", "el"),
 ]
 
-ENGLISH_FRENCH = [
+ENGLISH_FRENCH_PAIRS = [
     ("and", "et"),
     ("was", "fut"),
     ("for", "pour"),

@@ -1,4 +1,4 @@
-PIG_LATIN = [
+PIG_LATIN_PAIRS = [
     ("fake", "ake-fay"),
     ("intrinsic", "intrinsic-ay"),
     ("outrun", "outrun-ay"),

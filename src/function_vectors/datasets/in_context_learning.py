@@ -51,7 +51,7 @@ class ICL:
     def labels(self):
         return [instance.instance[1] for instance in self.in_context_instances]
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> ICLInstance:
         return self.in_context_instances[index]
 
     def _format(self, demonstrations: list[tuple[str, str]], feature: str) -> str:
@@ -61,13 +61,13 @@ class ICL:
 
         return f"{string} {feature}{self.separator}"
 
-    def _sample(self):
+    def _sample(self) -> str:
         demonstrations = random.sample(self.data, self.num_demonstrations)
         instance = random.choice(self.data)
 
         return (demonstrations, instance)
 
-    def _generate(self):
+    def _generate(self) -> list:
         instances = []
 
         for index in range(self.num_instances):
@@ -84,3 +84,29 @@ class ICL:
             instances.append(instance)
 
         return instances
+
+
+class InstructedICL(ICL):
+    def __init__(
+        self,
+        instruction: str,
+        data: list[tuple[str, str]],
+        num_instances: int,
+        num_demonstrations: int = 5,
+        separator: str = ":",
+        random_seed: int = 42,
+    ):
+        self.instruction = instruction.format(separator=separator)
+        super().__init__(
+            data, num_instances, num_demonstrations, separator, random_seed
+        )
+
+    def _generate(self):
+        return [
+            ICLInstance(
+                prompt=f"{self.instruction} {instance.prompt}",
+                demonstrations=instance.demonstrations,
+                instance=instance.instance,
+            )
+            for instance in super()._generate()
+        ]

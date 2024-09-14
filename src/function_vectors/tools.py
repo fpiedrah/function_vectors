@@ -5,8 +5,10 @@ from rich.table import Table
 
 from function_vectors import datasets
 
+
 def stringify_new_lines(string: str) -> str:
     return string.replace("\n", "\\n")
+
 
 def chart_results(
     dataset: datasets.ICL,
