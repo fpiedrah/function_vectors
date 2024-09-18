@@ -1,20 +1,17 @@
-from .antonyms import ANTONYM_INSTRUCTION, ANTONYM_PAIRS
-from .in_context_learning import ICL, ICLInstance, InstructedICL
-from .pig_latin import PIG_LATIN_PAIRS
-from .translation import (
-    ENGLISH_DEUTSCH_PAIRS,
-    ENGLISH_FRENCH_PAIRS,
-    ENGLISH_SPANISH_PAIRS,
+from function_vectors.datasets.antonyms import AntonymsDataset
+from function_vectors.datasets.capitalize import CapitalizeDataset
+from function_vectors.datasets.in_context_learning import (
+    COLON_TEMPLATE,
+    QUESTION_ANSWER_TEMPLATE,
+    InContextLearning,
+    corrupt,
 )
 
 __all__ = [
-    ICL,
-    ICLInstance,
-    InstructedICL,
-    ANTONYM_INSTRUCTION,
-    ANTONYM_PAIRS,
-    ENGLISH_DEUTSCH_PAIRS,
-    ENGLISH_FRENCH_PAIRS,
-    ENGLISH_SPANISH_PAIRS,
-    PIG_LATIN_PAIRS,
+    AntonymsDataset,
+    CapitalizeDataset,
+    corrupt,
+    InContextLearning,
+    COLON_TEMPLATE,
+    QUESTION_ANSWER_TEMPLATE,
 ]

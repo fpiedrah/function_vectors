@@ -6,14 +6,42 @@ authors = [
     {name = "Francisco Piedrahita Velez", email = "fpiedrah@brown.edu"},
 ]
 dependencies = [
-    "transformers>=4.44.2",
     "nnsight>=0.3.5",
+    "Jinja2>=3.1.4",
+    "circuitsvis>=1.41.0",
+    "transformer-lens>=2.6.0",
     "rich>=13.8.1",
 ]
-requires-python = "==3.12.*"
+requires-python = ">=3.12"
 readme = "README.md"
-license = {text = "MIT"}
+license = {text = "CC-BY-NC-4.0"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 
 [tool.pdm]
-distribution = false
+distribution = true
+
+[tool.pdm.build]
+includes = ["./src/function_vectors/datasets/resources/*.json"]
+
+[tool.pdm.dev-dependencies]
+debugging = [
+    "ipython>=8.27.0",
+]
+formatting = [
+    "black>=24.8.0",
+    "isort>=5.13.2",
+    "ruff>=0.6.5",
+]
+notebooks = [
+    "jupyterlab>=4.2.5",
+    "marimo>=0.8.15",
+    "ipywidgets>=8.1.5",
+    "pandas>=2.2.2",
+]
+tools = [
+    "huggingface-hub[cli]>=0.25.0",
+]
