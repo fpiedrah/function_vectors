@@ -11,17 +11,19 @@ def __():
     import nnsight
 
     from function_vectors import datasets
-    from function_vectors.function_vector import calculate_average_indirect_effect
-    return calculate_average_indirect_effect, datasets, nnsight, random
+    from function_vectors.function_vector import batched_average_indirect_effect
+
+    return batched_average_indirect_effect, datasets, nnsight, random
 
 
 @app.cell
 def __(random):
     MODEL_NAME = "google/gemma-2-2b"
     RANDOM_SEED = 42
+    BATCH_SIZE = 1
 
     random.seed(RANDOM_SEED)
-    return MODEL_NAME, RANDOM_SEED
+    return BATCH_SIZE, MODEL_NAME, RANDOM_SEED
 
 
 @app.cell
@@ -35,23 +37,25 @@ def __(MODEL_NAME, datasets, nnsight, random):
         random_seed=random.randint(0, 100),
         template=datasets.COLON_TEMPLATE,
     )
-    return dataset, model
+
+    corrupted_dataset = datasets.corrupt(dataset, random_seed=random.randint(0, 100))
+    return corrupted_dataset, dataset, model
 
 
 @app.cell
-def __(dataset):
-    dataset.prompts[0]
-    return
-
-
-@app.cell
-def __(calculate_average_indirect_effect, dataset, model, random):
-    average_indirect_effect = calculate_average_indirect_effect(
-        model, dataset, random_seed=random.randint(0, 100)
+def __(
+    BATCH_SIZE,
+    batched_average_indirect_effect,
+    corrupted_dataset,
+    dataset,
+    model,
+):
+    average_indirect_effect = batched_average_indirect_effect(
+        model, dataset, corrupted_dataset, BATCH_SIZE
     )
 
     average_indirect_effect
-    return average_indirect_effect,
+    return (average_indirect_effect,)
 
 
 @app.cell
