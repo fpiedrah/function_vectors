@@ -5,7 +5,7 @@
 groups = ["default", "debugging", "formatting", "notebooks", "tools"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:9d447eabce733a1fa4a1fb54f49b006e6b2bb647ab019a3d1e6d7e9a0364a6b0"
+content_hash = "sha256:f3d747e3f7bd52fe1abf9bb52bce43980c2d96945d960a0704bf5d2e0a1baea9"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
