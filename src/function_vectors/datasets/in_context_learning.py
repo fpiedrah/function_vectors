@@ -7,11 +7,11 @@ import typing
 import jinja2
 
 COLON_TEMPLATE = jinja2.Template(
-    """{% if instructions -%}
+    """{%- if instructions -%}
     {{ instructions ~ '\n' }}
     {%- endif -%}
 
-    {% for feature, label in context_examples -%}
+    {%- for feature, label in context_examples -%}
     {{ feature }}:{{ label ~ ' '}}
     {%- endfor -%}
 
@@ -20,17 +20,15 @@ COLON_TEMPLATE = jinja2.Template(
 
 
 QUESTION_ANSWER_TEMPLATE = jinja2.Template(
-    """{% if instructions -%}
+    """{%- if instructions -%}
     {{ instructions ~ '\n' }}
     {%- endif -%}
     
-    {% for feature, label in context_examples %}
-    Q: {{ feature }}
-    A: {{ label}}
-    {% endfor -%}
+    {%- for feature, label in context_examples -%}
+    Q: {{ feature ~ '\n' }}A: {{ label ~ '\n\n' }}
+    {%- endfor -%}
 
-    Q: {{ test_feature }}
-    A: """
+    Q: {{ test_feature ~ '\n' }}A: """
 )
 
 

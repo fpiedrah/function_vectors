@@ -12,6 +12,7 @@ def calculate_average_indirect_effect(
     dataset: datasets.InContextLearning,
     corrupted_dataset: datasets.InContextLearning,
     layer_indices: typing.Optional[list[int]],
+    use_inference_fabric: bool = False,
 ) -> torch.Tensor:
     heads_per_layer = model.config.num_attention_heads
     num_layers = model.config.num_hidden_layers
@@ -29,7 +30,7 @@ def calculate_average_indirect_effect(
 
     head_indices = list(range(heads_per_layer))
 
-    with model.trace() as tracer:
+    with model.trace(remote=use_inference_fabric) as tracer:
 
         clean_head_outputs = {}
         with tracer.invoke(dataset.prompts):
@@ -88,7 +89,8 @@ def batched_average_indirect_effect(
     dataset: datasets.InContextLearning,
     corrupted_dataset: datasets.InContextLearning,
     batch_size: int,
-):
+    use_inference_fabric: bool = False,
+) -> torch.Tensor:
     num_layers = model.config.num_hidden_layers
     heads_per_layer = model.config.num_attention_heads
 
@@ -96,14 +98,19 @@ def batched_average_indirect_effect(
         for index in range(0, num_layers, batch_size):
             yield range(num_layers)[index : index + batch_size]
 
-    difference_tensor = torch.empty((0, heads_per_layer))
+    difference_tensor = torch.empty((0, heads_per_layer)) 
 
     for layer_indices in _get_batches(num_layers, batch_size):
+        print(f"LAYERS: {layer_indices}")
         difference_tensor = torch.concat(
             [
                 difference_tensor,
                 calculate_average_indirect_effect(
-                    model, dataset, corrupted_dataset, layer_indices
+                    model,
+                    dataset,
+                    corrupted_dataset,
+                    layer_indices,
+                    use_inference_fabric,
                 ),
             ]
         )
