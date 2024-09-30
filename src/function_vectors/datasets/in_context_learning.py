@@ -6,18 +6,20 @@ import typing
 
 import jinja2
 
-COLON_TEMPLATE = jinja2.Template(
-    """{%- if instructions -%}
-    {{ instructions ~ '\n' }}
-    {%- endif -%}
+SEPARATOR_META_TEMPLATE = """{{%- if instructions -%}}
+    {{{{ instructions ~ '\\n' }}}}
+    {{%- endif -%}}
 
-    {%- for feature, label in context_examples -%}
-    {{ feature }}:{{ label ~ ' '}}
-    {%- endfor -%}
+    {{%- for feature, label in context_examples -%}}
+    {{{{ feature }}}}{separator}{{{{ label ~ ' '}}}}
+    {{%- endfor -%}}
 
-    {{ test_feature }}:"""
-)
+    {{{{ test_feature }}}}{separator}"""
 
+COLON_TEMPLATE = jinja2.Template(SEPARATOR_META_TEMPLATE.format(separator=":"))
+PIPE_TEMPLATE = jinja2.Template(SEPARATOR_META_TEMPLATE.format(separator="|"))
+HASH_TEMPLATE = jinja2.Template(SEPARATOR_META_TEMPLATE.format(separator="#"))
+DASH_TEMPLATE = jinja2.Template(SEPARATOR_META_TEMPLATE.format(separator="-"))
 
 QUESTION_ANSWER_TEMPLATE = jinja2.Template(
     """{%- if instructions -%}
@@ -129,6 +131,9 @@ class InContextLearning:
             )
 
         return instances
+
+
+ZeroShotLearning = functools.partial(InContextLearning, num_context_examples=0)
 
 
 def corrupt(dataset: InContextLearning, random_seed: int) -> InContextLearning:

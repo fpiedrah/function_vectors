@@ -42,6 +42,8 @@ notebooks = [
     "marimo>=0.8.15",
     "ipywidgets>=8.1.5",
     "pandas>=2.2.2",
+    "plotly>=5.24.1",
+    "scikit-learn>=1.5.2",
 ]
 tools = [
     "huggingface-hub[cli]>=0.25.0",

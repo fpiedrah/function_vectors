@@ -1,12 +1,12 @@
 import nnsight
 import torch
 
-from function_vectors import datasets
+from function_vectors.datasets.in_context_learning import InContextLearning
 
 
 def construct_task_vector(
     model: nnsight.LanguageModel,
-    dataset: datasets.InContextLearning,
+    dataset: InContextLearning,
     layer_index: int,
     use_inference_fabric: bool = False,
 ) -> tuple[torch.Tensor, list[str]]:
@@ -23,7 +23,7 @@ def construct_task_vector(
 
 def apply_task_vector(
     model: nnsight.LanguageModel,
-    dataset: datasets.InContextLearning,
+    dataset: InContextLearning,
     task_vector: torch.Tensor,
     layer_index: int,
     use_inference_fabric: bool = False,

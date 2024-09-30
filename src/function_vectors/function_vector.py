@@ -98,7 +98,7 @@ def batched_average_indirect_effect(
         for index in range(0, num_layers, batch_size):
             yield range(num_layers)[index : index + batch_size]
 
-    difference_tensor = torch.empty((0, heads_per_layer)) 
+    difference_tensor = torch.empty((0, heads_per_layer))
 
     for layer_indices in _get_batches(num_layers, batch_size):
         print(f"LAYERS: {layer_indices}")
