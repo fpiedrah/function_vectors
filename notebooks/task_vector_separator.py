@@ -8,6 +8,9 @@ app = marimo.App(width="medium")
 def __():
     import marimo
     import nnsight
+    import pandas
+    from plotly import express
+    from scipy.spatial import distance
     from sklearn.metrics import accuracy_score
 
     from function_vectors.datasets.antonyms import (
@@ -25,8 +28,10 @@ def __():
         PIPE_TEMPLATE,
         SEPARATOR_META_TEMPLATE,
     )
-    from function_vectors.task_vectors import apply_task_vector, construct_task_vector
-
+    from function_vectors.task_vectors import (
+        apply_task_vector,
+        construct_task_vector,
+    )
     return (
         COLON_TEMPLATE,
         DASH_TEMPLATE,
@@ -40,18 +45,21 @@ def __():
         accuracy_score,
         apply_task_vector,
         construct_task_vector,
+        distance,
+        express,
         marimo,
         nnsight,
+        pandas,
     )
 
 
 @app.cell
 def __(nnsight):
-    NUM_CONTEX_EXAMPLES = 5
-    NUM_INSTANCES = 30
-    LAYER_INDEX = 10
+    NUM_CONTEX_EXAMPLES = 10
+    NUM_INSTANCES = 15
+    LAYER_INDEX = 15
 
-    MODEL_NAME = "meta-llama/Llama-3.2-1B"
+    MODEL_NAME = "meta-llama/Llama-3.1-8B"
     model = nnsight.LanguageModel(MODEL_NAME)
     return (
         LAYER_INDEX,
@@ -75,6 +83,7 @@ def __(
     construct_task_vector,
     marimo,
     model,
+    pandas,
 ):
     colon_in_context_dataset = ICLAntonymsDataset(
         instructions=None,
@@ -107,7 +116,6 @@ def __(
         ## COLON SEPARATED ANTONYMS DATASET
         ---
 
-        **PROMPT EXAMPLE:** {colon_in_context_dataset.prompts[0]} \n
         **ICL ACCURACY:** {
             accuracy_score(
                 colon_in_context_dataset.test_labels, 
@@ -124,6 +132,21 @@ def __(
             accuracy_score(
                 colon_zero_shot_dataset.test_labels, 
                 colon_intervention_predicted,
+            )
+        }
+
+        **RESULTS:** {
+            marimo.as_html(
+                pandas.DataFrame.from_dict(
+                    {
+                        "prompts": colon_in_context_dataset.prompts,
+                        "feature": colon_in_context_dataset.test_features,
+                        "labels": colon_in_context_dataset.test_labels,
+                        "in_context": colon_in_context_predicted,
+                        "zero_shot": colon_zero_shot_predicted,
+                        "intervention": colon_intervention_predicted,
+                    }
+                )
             )
         }
         """
@@ -151,6 +174,7 @@ def __(
     construct_task_vector,
     marimo,
     model,
+    pandas,
 ):
     dash_in_context_dataset = ICLAntonymsDataset(
         instructions=None,
@@ -183,7 +207,6 @@ def __(
         ## DASH SEPARATED ANTONYMS DATASET
         ---
 
-        **PROMPT EXAMPLE:** {dash_in_context_dataset.prompts[0]} \n
         **ICL ACCURACY:** {
             accuracy_score(
                 dash_in_context_dataset.test_labels, 
@@ -200,6 +223,21 @@ def __(
             accuracy_score(
                 dash_zero_shot_dataset.test_labels, 
                 dash_intervention_predicted,
+            )
+        }
+
+        **RESULTS:** {
+            marimo.as_html(
+                pandas.DataFrame.from_dict(
+                    {
+                        "prompts": dash_in_context_dataset.prompts,
+                        "feature": dash_in_context_dataset.test_features,
+                        "labels": dash_in_context_dataset.test_labels,
+                        "in_context": dash_in_context_predicted,
+                        "zero_shot": dash_zero_shot_predicted,
+                        "intervention": dash_intervention_predicted,
+                    }
+                )
             )
         }
         """
@@ -228,6 +266,7 @@ def __(
     dash_in_context_dataset,
     marimo,
     model,
+    pandas,
 ):
     hash_in_context_dataset = ICLAntonymsDataset(
         instructions=None,
@@ -260,7 +299,6 @@ def __(
         ## HASH SEPARATED ANTONYMS DATASET
         ---
 
-        **PROMPT EXAMPLE:** {hash_in_context_dataset.prompts[0]} \n
         **ICL ACCURACY:** {
             accuracy_score(
                 hash_in_context_dataset.test_labels, 
@@ -279,6 +317,21 @@ def __(
                 hash_intervention_predicted,
             )
         }
+
+        **RESULTS:** {
+            marimo.as_html(
+                pandas.DataFrame.from_dict(
+                    {
+                        "prompts": hash_in_context_dataset.prompts,
+                        "feature": hash_in_context_dataset.test_features,
+                        "labels": hash_in_context_dataset.test_labels,
+                        "in_context": hash_in_context_predicted,
+                        "zero_shot": hash_zero_shot_predicted,
+                        "intervention": hash_intervention_predicted,
+                    }
+                )
+            )
+        }
         """
     )
     return (
@@ -293,7 +346,7 @@ def __(
 
 @app.cell
 def __(
-    ICLCapitalizeDataset,
+    ICLAntonymsDataset,
     LAYER_INDEX,
     NUM_CONTEX_EXAMPLES,
     NUM_INSTANCES,
@@ -304,8 +357,9 @@ def __(
     construct_task_vector,
     marimo,
     model,
+    pandas,
 ):
-    pipe_in_context_dataset = ICLCapitalizeDataset(
+    pipe_in_context_dataset = ICLAntonymsDataset(
         instructions=None,
         num_context_examples=NUM_CONTEX_EXAMPLES,
         num_instances=NUM_INSTANCES,
@@ -336,7 +390,6 @@ def __(
         ## PIPE SEPARATED ANTONYMS DATASET
         ---
 
-        **PROMPT EXAMPLE:** {pipe_in_context_dataset.prompts[0]} \n
         **ICL ACCURACY:** {
             accuracy_score(
                 pipe_in_context_dataset.test_labels, 
@@ -353,6 +406,21 @@ def __(
             accuracy_score(
                 pipe_zero_shot_dataset.test_labels, 
                 pipe_intervention_predicted,
+            )
+        }
+
+        **RESULTS:** {
+            marimo.as_html(
+                pandas.DataFrame.from_dict(
+                    {
+                        "prompts": pipe_in_context_dataset.prompts,
+                        "feature": pipe_in_context_dataset.test_features,
+                        "labels": pipe_in_context_dataset.test_labels,
+                        "in_context": pipe_in_context_predicted,
+                        "zero_shot": pipe_zero_shot_predicted,
+                        "intervention": pipe_intervention_predicted,
+                    }
+                )
             )
         }
         """
@@ -380,7 +448,7 @@ def __(
     construct_task_vector,
     marimo,
     model,
-    pipe_in_context_dataset,
+    pandas,
     pipe_task_vector,
 ):
     capitalize_in_context_dataset = ICLCapitalizeDataset(
@@ -416,7 +484,6 @@ def __(
         ## COLON SEPARATED CAPITALIZE DATASET
         ---
 
-        **PROMPT EXAMPLE:** {pipe_in_context_dataset.prompts[0]} \n
         **ICL ACCURACY:** {
             accuracy_score(
                 capitalize_in_context_dataset.test_labels, 
@@ -433,6 +500,21 @@ def __(
             accuracy_score(
                 capitalize_in_context_dataset.test_labels, 
                 capitalize_intervention_predicted,
+            )
+        }
+
+        **RESULTS:** {
+            marimo.as_html(
+                pandas.DataFrame.from_dict(
+                    {
+                        "prompts": capitalize_in_context_dataset.prompts,
+                        "feature": capitalize_in_context_dataset.test_features,
+                        "labels": capitalize_in_context_dataset.test_labels,
+                        "in_context": capitalize_in_context_predicted,
+                        "zero_shot": capitalize_zero_shot_predicted,
+                        "intervention": capitalize_intervention_predicted,
+                    }
+                )
             )
         }
         """
@@ -452,13 +534,12 @@ def __(
     capitalize_task_vector,
     colon_task_vector,
     dash_task_vector,
+    distance,
+    express,
     hash_task_vector,
     marimo,
     pipe_task_vector,
 ):
-    from plotly import express
-    from scipy.spatial import distance
-
     task_vectors_labels = [
         "colon_task_vector",
         "dash_task_vector",
@@ -478,19 +559,10 @@ def __(
 
     figure = express.imshow(
         similarity_matrix,
-        labels=dict(color="Cosine Similarity"),
         x=task_vectors_labels,
         y=task_vectors_labels,
         color_continuous_scale="Bluered",
     )
-
-    """
-    figure.update_layout(
-        title="Cosine Similarity Matrix Heatmap",
-        xaxis_title="Task Vectors",
-        yaxis_title="Task Vectors",
-    )
-    """
 
     marimo.md(
         f"""
@@ -500,14 +572,7 @@ def __(
         {marimo.as_html(figure)}
         """
     )
-    return (
-        distance,
-        express,
-        figure,
-        similarity_matrix,
-        task_vectors,
-        task_vectors_labels,
-    )
+    return figure, similarity_matrix, task_vectors, task_vectors_labels
 
 
 @app.cell
